@@ -31,14 +31,14 @@ const verifyToken = (req, res, next) => {
 app.get('/users', verifyToken, (req, res) => {
 
   const query = `
-  select e.idEmpleado, e.numEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, j.DesJuz as adscripcionActual, pe.adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  select distinct e.numEmpleado e.idEmpleado, e.numEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, j.DesJuz as adscripcionActual, pe.adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
   from tblempleados e 
   inner join tblplazaempleados pe on pe.idEmpleado = e.idEmpleado
   inner join tblgeneros gen on gen.cveGenero =e.cvegenero
   inner join tblplazaslaborales pla on pe.idPlazaLaboral = pla.idPlazaLaboral
   inner join tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
   inner join tbltiposplaza tp on pla.cveTipoPlaza = tp.cveTipoPlaza
-  inner join juzgadosgestion j on j.IdJuzgado = pe.cveAdscripcio
+  inner join juzgadosgestion j on j.IdJuzgado = pe.cveAdscripcion
   `;
 
   connection.query(query, (error, results) => {
