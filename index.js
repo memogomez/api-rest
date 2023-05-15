@@ -40,6 +40,8 @@ app.get('/users', verifyToken, (req, res) => {
   LEFT JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
   LEFT JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
   LEFT JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
+  where e.cveEstatusEmpleado = 1
+  and e.activo = 'S'
   `;
 
   connection.query(query, (error, results) => {
