@@ -33,15 +33,17 @@ app.get('/users', verifyToken, (req, res) => {
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
   FROM tblempleados e 
-  LEFT JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
-  LEFT JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
-  LEFT JOIN tblplazaslaborales pla ON pe.idPlazaLaboral = pla.idPlazaLaboral
-  LEFT JOIN tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
-  LEFT JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
-  LEFT JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
-  LEFT JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
+  left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
+  left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
+  left JOIN tblplazaslaborales pla ON pe.idPlazaLaboral = pla.idPlazaLaboral
+  left JOIN tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
+  left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
+  left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
+  left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
   where e.cveEstatusEmpleado = 1
   and e.activo = 'S'
+  and pe.activo = 'S'
+  and pe.vigente = 'S'
   `;
 
   connection.query(query, (error, results) => {
