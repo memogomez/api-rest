@@ -31,7 +31,9 @@ const verifyToken = (req, res, next) => {
 app.get('/users', verifyToken, (req, res) => {
 
   const query = `
-  SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, 
+  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
+  j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
   FROM tblempleados e 
   left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
   left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
@@ -40,7 +42,7 @@ app.get('/users', verifyToken, (req, res) => {
   left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
   left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
   left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
-  where e.cveEstatusEmpleado = 1
+  where e.cveEstatusEmpleado in (1,7)
   and e.activo = 'S'
   and pe.activo = 'S'
   and pe.vigente = 'S'
