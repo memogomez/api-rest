@@ -57,6 +57,32 @@ app.get('/users', verifyToken, (req, res) => {
   });
 });
 
+
+app.get('/inactivos', verifyToken, (req, res) => {
+
+  const query = `
+  SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, 
+  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
+  j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  FROM tblempleados e 
+  left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
+  left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
+  left JOIN tblplazaslaborales pla ON pe.idPlazaLaboral = pla.idPlazaLaboral
+  left JOIN tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
+  left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
+  left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
+  left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
+  `;
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      res.status(500).send(error.message);
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 // Endpoint para obtener el Bearer Token
 app.post('/login', (req, res) => {
   // Aquí iría la lógica para autenticar al usuario y generar el token
