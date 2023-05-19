@@ -58,7 +58,7 @@ app.get('/users', verifyToken, (req, res) => {
 });
 
 
-app.get('/inactivos', verifyToken, (req, res) => {
+app.get('/completo', verifyToken, (req, res) => {
 
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, 
