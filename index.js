@@ -61,17 +61,38 @@ app.get('/users', verifyToken, (req, res) => {
 app.get('/completo', verifyToken, (req, res) => {
 
   const query = `
-  SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, 
-  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
-  j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  SELECT DISTINCT (e.numEmpleado), e.idEmpleado, e.rfc, e.curp, e.nombre, e.paterno, e.materno, 
+  e.claveIssemym, e.fechaIngreso, 
+  gen.desGenero,
+  (select t4.desTipoPlaza  from tblempleados t 
+  left join tblplazaempleados t2 on t.idEmpleado = t2.idEmpleado
+  left join tblplazaslaborales t3 on t2.idPlazaLaboral = t3.idPlazaLaboral  
+  left join tbltiposplaza t4 on t3.cveTipoPlaza  = t4.cveTipoPlaza 
+  where t2.idPlazaEmpleado = (select max(idPlazaEmpleado) from tblplazaempleados 
+  where idEmpleado=e.idEmpleado)) desTipoPlaza,
+  (select t3.idPlaza from tblempleados t 
+  left join tblplazaempleados t2 on t.idEmpleado = t2.idEmpleado 
+  left join tblplazaslaborales t3 on t2.idPlazaLaboral = t3.idPlazaLaboral 
+  where t2.idPlazaEmpleado = (select max(idPlazaEmpleado) from tblplazaempleados 
+  where idEmpleado=e.idEmpleado)) idPlaza,
+  (select t3.desPuestoLaboral  from tblempleados t 
+  left join tblplazaempleados t2 on t.idEmpleado = t2.idEmpleado 
+  left join tblpuestoslaborales t3 on t2.idPuestoLaboral  = t3.idPuestoLaboral  
+  where t2.idPlazaEmpleado = (select max(idPlazaEmpleado) from tblplazaempleados where idEmpleado=e.idEmpleado)) desPuestoLaboral2, 
+  (select DesJuz from tblplazaempleados t 
+  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
+  where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
+  from tblplazaempleados where idEmpleado=e.idEmpleado)) adscripcionActual,
+  (select DesJuz from tblplazaempleados t 
+  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
+  where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
+  from tblplazaempleados where idEmpleado=e.idEmpleado)) idUnidadAdmin,
+  (select DesJuz from tblplazaempleados t 
+  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.adscripcionFisica 
+  where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
+  from tblplazaempleados where idEmpleado=e.idEmpleado)) adscripcionFisica
   FROM tblempleados e 
-  left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
   left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
-  left JOIN tblplazaslaborales pla ON pe.idPlazaLaboral = pla.idPlazaLaboral
-  left JOIN tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
-  left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
-  left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
-  left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
   `;
 
   connection.query(query, (error, results) => {
