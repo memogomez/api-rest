@@ -80,15 +80,15 @@ app.get('/completo', verifyToken, (req, res) => {
   left join tblpuestoslaborales t3 on t2.idPuestoLaboral  = t3.idPuestoLaboral  
   where t2.idPlazaEmpleado = (select max(idPlazaEmpleado) from tblplazaempleados where idEmpleado=e.idEmpleado)) desPuestoLaboral2, 
   (select DesJuz from tblplazaempleados t 
-  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
+  left JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
   where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
   from tblplazaempleados where idEmpleado=e.idEmpleado)) adscripcionActual,
   (select DesJuz from tblplazaempleados t 
-  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
+  left JOIN juzgadosgestion j ON j.IdJuzgado = t.cveAdscripcion
   where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
   from tblplazaempleados where idEmpleado=e.idEmpleado)) idUnidadAdmin,
   (select DesJuz from tblplazaempleados t 
-  inner JOIN juzgadosgestion j ON j.IdJuzgado = t.adscripcionFisica 
+  left JOIN juzgadosgestion j ON j.IdJuzgado = t.adscripcionFisica 
   where t.idPlazaEmpleado = (select max(idPlazaEmpleado) 
   from tblplazaempleados where idEmpleado=e.idEmpleado)) adscripcionFisica
   FROM tblempleados e 
