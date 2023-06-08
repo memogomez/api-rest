@@ -32,7 +32,7 @@ app.get('/users', verifyToken, (req, res) => {
 
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
-  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
+  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, e.numIfe, e.correoInstitucional, 
   j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
   FROM tblempleados e 
   left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
@@ -62,7 +62,7 @@ app.get('/completo', verifyToken, (req, res) => {
 
   const query = `
   SELECT DISTINCT (e.numEmpleado), e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
-  e.claveIssemym, e.fechaIngreso, 
+  e.claveIssemym, e.fechaIngreso, e.numIfe, e.correoInstitucional,
   gen.desGenero,
   (select t4.desTipoPlaza  from tblempleados t 
   left join tblplazaempleados t2 on t.idEmpleado = t2.idEmpleado
