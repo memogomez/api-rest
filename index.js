@@ -62,7 +62,7 @@ app.get('/completo', verifyToken, (req, res) => {
 
   const query = `
   SELECT DISTINCT (e.numEmpleado), e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
-  e.claveIssemym, e.fechaIngreso, e.numIfe, e.correoInstitucional,
+  e.claveIssemym, e.fechaIngreso, e.numIfe, e.correoInstitucional, e.activo,
   gen.desGenero,
   (select t4.desTipoPlaza  from tblempleados t 
   left join tblplazaempleados t2 on t.idEmpleado = t2.idEmpleado
