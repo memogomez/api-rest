@@ -1,35 +1,33 @@
-const express = require('express');
-const mysql = require('mysql2');
-const jwt = require('jsonwebtoken');
-
-const app = express();
-const secretKey = 'mySecretKey';
+const express = require('express')
+const mysql = require('mysql2')
+const jwt = require('jsonwebtoken')
+const app = express()
+const secretKey = 'mySecretKey'
 
 const connection = mysql.createConnection({
   host: '10.60.10.5',
   user: 'fgjdesa',
   password: '$fgjDesa123',
   database: 'htsj_administrativo'
-});
+})
 
 // Middleware para verificar el Bearer Token
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  
-  if (token == null) return res.sendStatus(401);
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) return res.sendStatus(401)
 
   jwt.verify(token, secretKey, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.sendStatus(403)
 
-    req.user = user;
-    next();
-  });
+    req.user = user
+    next()
+  })
 }
 
 // Endpoint protegido con Bearer Token
 app.get('/users', verifyToken, (req, res) => {
-
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre, REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
   e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, e.numIfe, e.correoInstitucional, 
@@ -46,20 +44,18 @@ app.get('/users', verifyToken, (req, res) => {
   and e.activo = 'S'
   and pe.activo = 'S'
   and pe.vigente = 'S'
-  `;
+  `
 
   connection.query(query, (error, results) => {
     if (error) {
-      res.status(500).send(error.message);
+      res.status(500).send(error.message)
     } else {
-      res.json(results);
+      res.json(results)
     }
-  });
-});
-
+  })
+})
 
 app.get('/completo', verifyToken, (req, res) => {
-
   const query = `
   SELECT DISTINCT (e.numEmpleado), e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
   e.claveIssemym, e.fechaIngreso, e.numIfe, e.correoInstitucional, e.activo,
@@ -93,19 +89,19 @@ app.get('/completo', verifyToken, (req, res) => {
   from tblplazaempleados where idEmpleado=e.idEmpleado)) adscripcionFisica
   FROM tblempleados e 
   left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
-  `;
+  `
 
   connection.query(query, (error, results) => {
     if (error) {
-      res.status(500).send(error.message);
+      res.status(500).send(error.message)
     } else {
-      res.json(results);
+      res.json(results)
     }
-  });
-});
+  })
+})
 
 app.get('/user/:parametro', verifyToken, (req, res) => {
-  const parametro = req.params.parametro;
+  const parametro = req.params.parametro
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
   e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
@@ -119,26 +115,26 @@ app.get('/user/:parametro', verifyToken, (req, res) => {
   left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
   left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
   where e.numEmpleado =${parametro}
-  `;
+  `
   // Aquí puedes hacer lo que necesites con el parámetro recibido
   connection.query(query, (error, results) => {
     if (error) {
-      res.status(500).send(error.message);
+      res.status(500).send(error.message)
     } else {
-      res.json(results);
+      res.json(results)
     }
-  });
-});
+  })
+})
 
 // Endpoint para obtener el Bearer Token
 app.post('/login', (req, res) => {
   // Aquí iría la lógica para autenticar al usuario y generar el token
-  const user = { username: 'johndoe' };
-  const token = jwt.sign(user, secretKey);
+  const user = { username: 'johndoe' }
+  const token = jwt.sign(user, secretKey)
 
-  res.json({ token });
-});
+  res.json({ token })
+})
 
 app.listen(3000, () => {
-  console.log('API listening on port 3000');
-});
+  console.log('API listening on port 3000')
+})
