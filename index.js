@@ -126,6 +126,32 @@ app.get('/user/:parametro', verifyToken, (req, res) => {
   })
 })
 
+app.get('/users/:idUser', verifyToken, (req, res) => {
+  const idUser = req.params.idUser
+  const query = `
+  SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
+  e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
+  j.DesJuz as adscripcionActual,pe.adscripcionFisica as idAdscripcionFisica, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  FROM tblempleados e 
+  left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
+  left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
+  left JOIN tblplazaslaborales pla ON pe.idPlazaLaboral = pla.idPlazaLaboral
+  left JOIN tblpuestoslaborales pl ON pe.idPuestoLaboral = pl.idPuestoLaboral
+  left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
+  left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
+  left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
+  where e.idEmpleado =${idUser}  AND pe.activo ='S'
+  `
+
+  connection.query(query, (error, results) => {
+    if (error) {
+      res.status(500).send(error.message)
+    } else {
+      res.json(results)
+    }
+  })
+})
+
 // Endpoint para obtener el Bearer Token
 app.post('/login', (req, res) => {
   // Aquí iría la lógica para autenticar al usuario y generar el token
