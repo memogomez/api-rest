@@ -114,7 +114,7 @@ app.get('/user/:parametro', verifyToken, (req, res) => {
   left JOIN tbltiposplaza tp ON pla.cveTipoPlaza = tp.cveTipoPlaza
   left JOIN juzgadosgestion j ON j.IdJuzgado = pe.cveAdscripcion
   left JOIN juzgadosgestion k ON k.IdJuzgado = pe.adscripcionFisica
-  where e.numEmpleado =${parametro}
+  where e.numEmpleado =${parametro} and pe.activo='S'
   `
   // Aquí puedes hacer lo que necesites con el parámetro recibido
   connection.query(query, (error, results) => {
