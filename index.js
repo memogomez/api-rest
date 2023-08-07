@@ -105,7 +105,7 @@ app.get('/user/:parametro', verifyToken, (req, res) => {
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
   e.claveIssemym, e.fechaIngreso, gen.desGenero, pla.idPlaza, tp.desTipoPlaza, pl.desPuestoLaboral, 
-  j.DesJuz as adscripcionActual, k.DesJuz as adscripcionFisica, j.cveOrganigrama as idUnidadAdmin
+  j.DesJuz as adscripcionActual, pe.adscripcionFisica as idAdscripcionFisica, j.cveOrganigrama as idUnidadAdmin
   FROM tblempleados e 
   left JOIN tblplazaempleados pe ON pe.idEmpleado = e.idEmpleado
   left JOIN tblgeneros gen ON gen.cveGenero = e.cvegenero
