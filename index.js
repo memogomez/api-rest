@@ -7,7 +7,7 @@ const secretKey = 'mySecretKey'
 const connection = mysql.createConnection({
   host: '10.210.4.114',
   user: 'siappuser',
-  password: '$Tzj6g4Sc$f0NRtB',
+  password: 'Tzj6g4Sc$f0NRtB',
   database: 'htsj_administrativo'
 })
 
