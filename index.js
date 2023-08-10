@@ -5,9 +5,9 @@ const app = express()
 const secretKey = 'mySecretKey'
 
 const connection = mysql.createConnection({
-  host: '10.210.4.114',
-  user: 'siappuser',
-  password: '$Tzj6g4Sc$f0NRtB',
+  host: '10.60.10.5',
+  user: 'fgjdesa',
+  password: '$fgjDesa123',
   database: 'htsj_administrativo'
 })
 
