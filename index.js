@@ -126,7 +126,7 @@ app.get('/user/:parametro', verifyToken, (req, res) => {
   })
 })
 
-app.get('/users/:parametro', verifyToken, (req, res) => {
+app.get('/inactivos/:parametro', verifyToken, (req, res) => {
   const parametro = req.params.parametro
   const query = `
   SELECT DISTINCT e.numEmpleado, e.idEmpleado, e.rfc, e.curp, e.nombre,  REPLACE(e.paterno, '�', 'Ñ') as paterno,  REPLACE(e.materno, '�', 'Ñ') as materno, 
